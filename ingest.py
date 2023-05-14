@@ -18,6 +18,8 @@ def load_single_document(file_path: str) -> Document:
     # Loads a single document from a file path
     if file_path.endswith(".txt"):
         loader = TextLoader(file_path, encoding="utf8")
+    elif file_path.endswith(".md"):
+        loader = TextLoader(file_path, encoding="utf8")
     elif file_path.endswith(".pdf"):
         loader = PDFMinerLoader(file_path)
     elif file_path.endswith(".csv"):
@@ -27,10 +29,22 @@ def load_single_document(file_path: str) -> Document:
 
 def load_documents(source_dir: str) -> List[Document]:
     # Loads all documents from source documents directory
-    txt_files = glob.glob(os.path.join(source_dir, "**/*.txt"), recursive=True)
-    pdf_files = glob.glob(os.path.join(source_dir, "**/*.pdf"), recursive=True)
-    csv_files = glob.glob(os.path.join(source_dir, "**/*.csv"), recursive=True)
-    all_files = txt_files + pdf_files + csv_files
+    
+    # txt_files = glob.glob(os.path.join(source_dir, "**/*.txt"), recursive=True)
+    # pdf_files = glob.glob(os.path.join(source_dir, "**/*.pdf"), recursive=True)
+    # csv_files = glob.glob(os.path.join(source_dir, "**/*.csv"), recursive=True)
+    # all_files = txt_files + pdf_files + csv_files
+    # return [load_single_document(file_path) for file_path in all_files]
+
+    file_types = [".md", ".txt", ".pdf", ".csv"]
+    all_files = []
+    for root, dirs, files in os.walk(source_dir):
+        for file in files:
+            file_path = os.path.join(root, file)
+            for ft in file_types:
+                if ft in file_path:
+                    all_files.append(file_path)
+    print(all_files)
     return [load_single_document(file_path) for file_path in all_files]
 
 
